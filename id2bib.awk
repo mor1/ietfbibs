@@ -1,15 +1,24 @@
-######################################################################
 #
-# $Id: id2bib.awk,v 1.1 2000/09/08 11:29:25 rmm1002 Exp $
-#
-
 # Attempt to do for Internet Drafts (1id-abstracts.txt) what rfc2bib
 # does for rfc-index.txt.  Doesn't work that well since
 # 1id-abstracts.txt is far less regularly structured.
-
-# (C) 2000 Richard Mortier, rmm1002@cl.cam.ac.uk
-
-# See http://www.cl.cam.ac.uk/~rmm1002/code.html for updates, etc.
+#
+# Copyright (C) 2000 Richard Mortier <mort@cantab.net>.  All Rights
+# Reserved.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+# USA.
 
 ######################################################################
 #
