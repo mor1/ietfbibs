@@ -33,7 +33,7 @@ BEGIN {
     printf ("%% Date: %s\n", strftime());
     printf ("%%\n");
     printf ("%% This file is auto-generated from rfc-index.txt by rfc2bib.awk\n") ;
-    printf ("%% by Richard Mortier (rmm1002 at cl.cam.ac.uk).\n") ;
+    printf ("%% by Richard Mortier (mort@cantab.net).\n") ;
     printf ("\n");
     printf ("@string{ietf=\"{IETF}\"}\n\n") ; 
 

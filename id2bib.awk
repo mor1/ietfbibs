@@ -34,7 +34,7 @@ BEGIN {
     printf ("%% Date: %s\n", strftime());
     printf ("%%\n");
     printf ("%% This file is auto-generated from 1id-abstracts.txt by id2bib.awk\n") ;
-    printf ("%% by Richard Mortier (rmm1002@cl.cam.ac.uk).  Consequently it gets\n") ;
+    printf ("%% by Richard Mortier (mort@cantab.net).  Consequently it gets\n") ;
     printf ("%% slightly confused by some entries, so as always\n") ;
     printf ("%%\n");
     printf ("%%                      PROOF-READ YOUR DOCUMENT!\n")

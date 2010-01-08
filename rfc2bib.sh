@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Copyright (C) 2002 Richard Mortier <mort@cantab.net>.  All Rights
+# Copyright (C) 2000 Richard Mortier <mort@cantab.net>.  All Rights
 # Reserved.
 #
 # This program is free software; you can redistribute it and/or modify
