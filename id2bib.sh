@@ -20,4 +20,4 @@
 SCRIPT=~/src/awk-scripts.git/id2bib.awk
 INDEX=~/docs/internet-drafts/1id-abstracts.txt
 
-gawk -f $SCRIPT -- $INDEX
+gawk -W re-interval -f $SCRIPT -- $INDEX

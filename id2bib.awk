@@ -5,6 +5,7 @@
 #
 # Copyright (C) 2000 Richard Mortier <mort@cantab.net>.  All Rights
 # Reserved.
+# Copyright (C) 2010 Paul Jakma <paul@jakma.org>. Etc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -20,13 +21,10 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
 # USA.
 
-######################################################################
-#
-
-BEGIN { 
-
-    FS="\"," ; RS=".[\t ]*\n([\t ]*\n)+  \"";
-
+BEGIN {
+    FS="[\",<>]";
+    RS="(\n[A-Za-z0-9].*\n[^ ]+\n)*  \"";
+    
     # banner
     printf ("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
     printf ("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n");
@@ -37,68 +35,74 @@ BEGIN {
     printf ("%% by Richard Mortier (mort@cantab.net).  Consequently it gets\n") ;
     printf ("%% slightly confused by some entries, so as always\n") ;
     printf ("%%\n");
-    printf ("%%                      PROOF-READ YOUR DOCUMENT!\n")
+    printf ("%%                      PROOF-READ YOUR DOCUMENT!\n");
     printf ("%%\n");
     printf ("\n");
-    printf ("@string{ietf=\"{IETF}\"}\n\n") ; 
-
+    printf ("@string{ietf=\"{IETF}\"}\n\n");
 }
 
-######################################################################
-#
+function get_authors(field, i, first) {
+    first = 1;
+    authors = "";
+    
+    for (i = field; i <= NF; i++) {
+        if (length($i) == 0) continue;
+        if ($i ~ /[0-9]{1,2}[-/][[:alpha:]]{3}[-/][0-9]{2}/) 
+            break;
 
-{
-    title = gensub(/([A-Z])/, "{\\1}", "g", $1) ;
-
-    split ($2, t, "<") ; 
-
-    split (t[1], tt, ",") ;
-    tt_len = 0;
-    for (x in tt)
-    {
-	tt_len++ ;
+        if (first) first = 0;
+        else authors = authors " and ";
+        authors = authors $i;
     }
-    authors = tt[1] ;
-    for (i=2; i<tt_len-1; i++)
-    {
-	if (length(tt[i]) > 0) 
-	{
-	    authors = authors " and " tt[i] ;
-	}
+    return i;
+}
+
+NF > 1 {
+    for (i = 1; i <= NF; i++) {
+        gsub(/[ \n\t]+/, " ", $i);
+        sub(/^[ ]+/,"",$i);
     }
 
-    split (tt[tt_len-1], date, "/") ;
-    month = date[1] ;
-    year = date[3] ;
-    if      (int(month) ==  1) { month = "jan" }
-    else if (int(month) ==  2) { month = "feb" }
-    else if (int(month) ==  3) { month = "mar" }
-    else if (int(month) ==  4) { month = "apr" }
-    else if (int(month) ==  5) { month = "may" }
-    else if (int(month) ==  6) { month = "jun" }
-    else if (int(month) ==  7) { month = "jul" }
-    else if (int(month) ==  8) { month = "aug" }
-    else if (int(month) ==  9) { month = "sep" }
-    else if (int(month) == 10) { month = "oct" }
-    else if (int(month) == 11) { month = "nov" }
-    else if (int(month) == 12) { month = "dec" }
+    numfield = 0;
 
-    split (t[2], tt, ">") ;
-    number = tt[1] ;
-    gsub (/\.txt/, "", number) ;
-    abstract = tt[2] ;
-    gsub(/[ ]+|[\n]+/, " ", abstract) ;
+    i = 1
+    while (i <= NF) {
+        if (length($i) == 0) {
+            i++;
+            continue;
+        }
+        
+        nexti = i + 1;
+            
+        if (numfield == 0) {
+            title =  gensub(/([A-Z])/, "{\\1}", "g", $1);
+        } else if (numfield == 1) {
+            nexti = get_authors(i);
+        } else if (numfield == 2) {
+            split ($i, date, "-");
+            month = date[2];
+            year = "20" date[3];
+        } else if (numfield == 3) {
+            gsub (/\.txt/, "", $i);
+            idstr = $i;
+        } else if (numfield == 4) {
+            abstract =  $i;
+        } else if (numfield > 4) {
+            # The FS will have split the abstract up on any commas it contains
+            abstract = abstract ", " $i;
+        }
+        numfield++;
+        i = nexti;
+    }
 
-    printf ("@Misc{id:%s,\n", number) ;
+    printf ("@Misc{id:%s,\n", idstr) ;
     printf ("  author = {%s},\n", authors) ;
     printf ("  title = {%s},\n", title) ;
     printf ("  howpublished = {Internet Draft},\n") ;
     printf ("  month = %s,\n", month) ;
     printf ("  year = %s,\n", year) ;
-    printf ("  note = {%s},\n", "<" number ".txt>") ;
+    printf ("  note = {%s},\n", "<" idstr ".txt>") ;
     printf ("  abstract = {%s},\n", abstract) ;
+    printf ("  url = {{http://tools.ietf.org/html/%s}},\n", idstr); 
     printf ("}\n\n") ;
 }
-
-######################################################################
-######################################################################
