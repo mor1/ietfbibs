@@ -21,7 +21,7 @@ BEGIN {
 
     # banner
     printf ("%% This file is auto-generated from rfc-index.txt by rfc2bib.awk\n") ;
-    printf ("%% by Richard Mortier (mort -at- cantab.net).\n") ;
+    printf ("%% by Richard Mortier <mort@cantab.net>.\n") ;
     printf ("%%\n");
     printf ("%% Date: %s\n", strftime());
     printf ("\n");
