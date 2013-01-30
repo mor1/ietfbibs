@@ -39,7 +39,23 @@ BEGIN {
 ######################################################################
 #
 
-/^[0-9][0-9][0-9][0-9]/{
+/^[0-9][0-9][0-9][0-9] Not Issued.$/ {
+
+    number = substr($1, 0, 4) ;
+    gsub (/^0+/, "", number) ;
+
+    printf ("@TechReport{rfc:%s,\n", number);
+    printf ("  key = {RFC%s},\n", number);
+    printf ("  author = {},\n");
+    printf ("  title = {{Not Issued}},\n");
+    printf ("  institution = ietf,\n");
+    printf ("  type = {{RFC}},\n");
+    printf ("  year = {},\n");
+    printf ("}\n\n");
+    next;
+}
+
+/^[0-9][0-9][0-9][0-9] /{
     
     gsub(/[\n]/, "", $0) ;
     gsub(/[ ]+/, " ", $0) ;
@@ -110,7 +126,6 @@ BEGIN {
 
     printf ("  annote = {%s},\n", $NF) ;
     printf ("}\n\n") ;
-
 }
 
 ######################################################################
