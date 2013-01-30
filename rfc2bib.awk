@@ -72,7 +72,7 @@ BEGIN {
     gsub(/^ /, "", authors) ;
     if (length(authors) == 0)
     {
-	authors = "author list not available" ;
+        authors = "author list not available" ;
     }
     printf ("  author = {%s},\n", authors ) ;
 
@@ -91,7 +91,7 @@ BEGIN {
     year  = substr(y_fld, y_pos, 4) ;
     if (length(year) == 0)
     {
-	year = "{year not available}" ;
+        year = "{year not available}" ;
     }
     printf ("  year = %s,\n", year) ;
 
@@ -104,7 +104,7 @@ BEGIN {
     month = substr(tolower(m_fld), 0, 3) ;
     if (length(month) == 0) 
     {
-	month = "{month not available}" ;
+        month = "{month not available}" ;
     }
     printf ("  month = %s,\n", month) ;
 
