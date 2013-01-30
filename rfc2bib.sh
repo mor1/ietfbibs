@@ -17,11 +17,11 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
 # USA.
 
-SCRIPT=~/src/awk-scripts.git/rfc2bib.awk
-INDEX_DIR=~/docs
-INDEX=${INDEX_DIR}/1rfc_index.txt
+set -ex
 
-rm -f ${INDEX}
-cd ${INDEX_DIR}
-wget -q http://www.ietf.org/iesg/1rfc_index.txt
-gawk -f $SCRIPT -- $INDEX
+SCRIPT=~/src/awk-scripts.git/rfc2bib.awk
+INDEX=./rfc-index.txt
+
+rm -f ${INDEX} rfcs.bib
+wget -q http://www.rfc-editor.org/rfc/rfc-index.txt
+gawk -f $SCRIPT -- $INDEX > rfcs.bib

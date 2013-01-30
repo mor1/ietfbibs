@@ -27,13 +27,10 @@ BEGIN {
     FS="[.] " ; RS="\n\n" ; 
 
     # banner
-    printf ("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-    printf ("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n");
+    printf ("%% This file is auto-generated from rfc-index.txt by rfc2bib.awk\n") ;
+    printf ("%% by Richard Mortier (mort -at- cantab.net).\n") ;
     printf ("%%\n");
     printf ("%% Date: %s\n", strftime());
-    printf ("%%\n");
-    printf ("%% This file is auto-generated from rfc-index.txt by rfc2bib.awk\n") ;
-    printf ("%% by Richard Mortier (mort@cantab.net).\n") ;
     printf ("\n");
     printf ("@string{ietf=\"{IETF}\"}\n\n") ; 
 
@@ -50,7 +47,7 @@ BEGIN {
     # guard '$', '_', '#' from BibTeX/LaTeX in all fields
     gsub(/\$/, "\\$", $0 ) ; # ");
     gsub(/_/, "\\_", $0 ) ; # ");
-    gsub(/\#/, "\\" "\#", $0 ) ; # ");
+    gsub(/#/, "\\" "#", $0 ) ; # ");
 
     number = substr($1, 0, 4) ;
     gsub (/^0+/, "", number) ;
