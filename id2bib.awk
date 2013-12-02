@@ -24,7 +24,7 @@
 BEGIN {
     FS="[\",<>]";
     RS="(\n[A-Za-z0-9].*\n[^ ]+\n)*  \"";
-    
+
     # banner
     printf ("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
     printf ("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n");
@@ -44,10 +44,10 @@ BEGIN {
 function get_authors(field, i, first) {
     first = 1;
     authors = "";
-    
+
     for (i = field; i <= NF; i++) {
         if (length($i) == 0) continue;
-        if ($i ~ /[0-9]{1,2}[-/][[:alpha:]]{3}[-/][0-9]{2}/) 
+        if ($i ~ /[0-9]{1,2}[-/][[:alpha:]]{3}[-/][0-9]{2}/)
             break;
 
         if (first) first = 0;
@@ -71,9 +71,9 @@ NF > 1 {
             i++;
             continue;
         }
-        
+
         nexti = i + 1;
-            
+
         if (numfield == 0) {
             title =  gensub(/([A-Z])/, "{\\1}", "g", $1);
         } else if (numfield == 1) {
@@ -103,6 +103,6 @@ NF > 1 {
     printf ("  year = %s,\n", year) ;
     printf ("  note = {%s},\n", "<" idstr ".txt>") ;
     printf ("  abstract = {%s},\n", abstract) ;
-    printf ("  url = {{http://tools.ietf.org/html/%s}},\n", idstr); 
+    printf ("  url = {{http://tools.ietf.org/html/%s}},\n", idstr);
     printf ("}\n\n") ;
 }

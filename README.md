@@ -11,4 +11,3 @@ id2bib
 ------
 
 Fetch and format the IETF Internet Draft index as BibTeX.
-                                                         

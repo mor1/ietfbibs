@@ -15,9 +15,9 @@
 # this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 # Place - Suite 330, Boston, MA 02111-1307, USA.
 
-BEGIN { 
+BEGIN {
 
-    FS="[.] " ; RS="\n\n" ; 
+    FS="[.] " ; RS="\n\n" ;
 
     # banner
     printf ("%% This file is auto-generated from rfc-index.txt by rfc2bib.awk\n") ;
@@ -25,7 +25,7 @@ BEGIN {
     printf ("%%\n");
     printf ("%% Date: %s\n", strftime());
     printf ("\n");
-    printf ("@string{ietf=\"{IETF}\"}\n\n") ; 
+    printf ("@string{ietf=\"{IETF}\"}\n\n") ;
 
 }
 
@@ -46,7 +46,7 @@ BEGIN {
 }
 
 /^[0-9][0-9][0-9][0-9] /{
-    
+
     gsub(/[\n]/, "", $0) ;
     gsub(/[ ]+/, " ", $0) ;
 
@@ -87,7 +87,7 @@ BEGIN {
     title = gensub(/([A-Z])/, "{\\1}", "g", tmp) ;
     gsub(/&/, "\\" "\\&", title ) ; # ");
     gsub(/ - /, " -- ", title ) ; # ");
-    printf ("  title = {%s},\n", title) ;    
+    printf ("  title = {%s},\n", title) ;
 
     # just let the institution be the IETF for now
     printf ("  institution = ietf,\n") ;
@@ -108,7 +108,7 @@ BEGIN {
     m_fld = $ (NF-1) ;
     gsub(/-| |\n|[0-9]/, "", m_fld) ;
     month = substr(tolower(m_fld), 0, 3) ;
-    if (length(month) == 0) 
+    if (length(month) == 0)
     {
         month = "{month not available}" ;
     }
