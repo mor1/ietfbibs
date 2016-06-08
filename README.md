@@ -1,13 +1,9 @@
-Mort's (G)Awk Scripts
-=====================
+IETF BibTeX Creation
+====================
 
-rfc2bib
--------
+This project is licensed under the MIT license.
 
-Fetch and format the IETF RFC index as BibTeX.
-
-
-id2bib
-------
-
-Fetch and format the IETF Internet Draft index as BibTeX.
+These are some [gawk](https://www.gnu.org/software/gawk/) scripts for processing
+various IETF index files to produce BibTeX. As regex based parsers they're quite
+brittle and rely on consistent formatting of the input. Also included are some
+shell scripts to drive them.
