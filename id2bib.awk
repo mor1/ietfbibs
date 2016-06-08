@@ -1,44 +1,35 @@
+# Copyright(c) 2000-2016 Richard Mortier <mort@cantab.net>
+# Copyright(c) 2010 Paul Jakma <paul@jakma.org>
 #
-# Attempt to do for Internet Drafts (1id-abstracts.txt) what rfc2bib
-# does for rfc-index.txt.  Doesn't work that well since
-# 1id-abstracts.txt is far less regularly structured.
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
 #
-# Copyright (C) 2000 Richard Mortier <mort@cantab.net>.  All Rights
-# Reserved.
-# Copyright (C) 2010 Paul Jakma <paul@jakma.org>. Etc.
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
 #
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License version 2 as
-# published by the Free Software Foundation
-#
-# This program is distributed in the hope that it will be useful, but
-# WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-# General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-# USA.
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
 BEGIN {
-    FS="[\",<>]";
+    FS="[\"<>]";
     RS="(\n[A-Za-z0-9].*\n[^ ]+\n)*  \"";
 
     # banner
-    printf ("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-    printf ("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n");
-    printf ("%%\n");
-    printf ("%% Date: %s\n", strftime());
-    printf ("%%\n");
-    printf ("%% This file is auto-generated from 1id-abstracts.txt by id2bib.awk\n") ;
-    printf ("%% by Richard Mortier (mort@cantab.net).  Consequently it gets\n") ;
-    printf ("%% slightly confused by some entries, so as always\n") ;
-    printf ("%%\n");
-    printf ("%%                      PROOF-READ YOUR DOCUMENT!\n");
-    printf ("%%\n");
-    printf ("\n");
-    printf ("@string{ietf=\"{IETF}\"}\n\n");
+    printf("% This file auto-generated from id-index.txt by id2bib.awk\n");
+    printf("% by Richard Mortier <mort@cantab.net>.\n");
+    printf("%\n");
+    printf("% Date: %s\n", strftime());
+    printf("\n");
+    printf("@string{ietf=\"{IETF}\"}\n\n");
 }
 
 function get_authors(field, i, first) {
@@ -49,6 +40,8 @@ function get_authors(field, i, first) {
         if (length($i) == 0) continue;
         if ($i ~ /[0-9]{1,2}[-/][[:alpha:]]{3}[-/][0-9]{2}/)
             break;
+        if ($i ~ /(19|20)[0-9]{2}-[0-9]{2}-[0-9]{2}/)
+            break;
 
         if (first) first = 0;
         else authors = authors " and ";
@@ -58,51 +51,46 @@ function get_authors(field, i, first) {
 }
 
 NF > 1 {
+    # guard '$', '_', '#' from BibTeX/LaTeX in all fields
+    gsub(/\$/, "\\$", $0 ); # ");
+    gsub(/_/, "\\_", $0 ); # ");
+    gsub(/#/, "\\" "#", $0 ); # ");
+
     for (i = 1; i <= NF; i++) {
         gsub(/[ \n\t]+/, " ", $i);
         sub(/^[ ]+/,"",$i);
     }
 
-    numfield = 0;
+    title = gensub(/([A-Z])/, "{\\1}", "g", $1);
+    idstr = $3;
+    abstract = $4;
 
-    i = 1
-    while (i <= NF) {
-        if (length($i) == 0) {
-            i++;
-            continue;
-        }
+    authors = "";
+    n=split($2, authors_date, ",");
+    for (i=0; i<n-1; i++)
+    {
+        a = authors_date[i];
+        gsub(/[ \n\t]+/, " ", a);
+        sub(/^[ ]+/, "", a);
 
-        nexti = i + 1;
-
-        if (numfield == 0) {
-            title =  gensub(/([A-Z])/, "{\\1}", "g", $1);
-        } else if (numfield == 1) {
-            nexti = get_authors(i);
-        } else if (numfield == 2) {
-            split ($i, date, "-");
-            month = date[2];
-            year = "20" date[3];
-        } else if (numfield == 3) {
-            gsub (/\.txt/, "", $i);
-            idstr = $i;
-        } else if (numfield == 4) {
-            abstract =  $i;
-        } else if (numfield > 4) {
-            # The FS will have split the abstract up on any commas it contains
-            abstract = abstract ", " $i;
-        }
-        numfield++;
-        i = nexti;
+        if(a == "") continue;
+        else if(authors == "") authors = a
+        else authors = authors " and " a;
     }
+    date = authors_date[n-1];
+    split(date, ymd, "-");
+    year = ymd[1];
+    month = ymd[2];
+    day = ymd[3];
 
-    printf ("@Misc{id:%s,\n", idstr) ;
-    printf ("  author = {%s},\n", authors) ;
-    printf ("  title = {%s},\n", title) ;
-    printf ("  howpublished = {Internet Draft},\n") ;
-    printf ("  month = %s,\n", month) ;
-    printf ("  year = %s,\n", year) ;
-    printf ("  note = {%s},\n", "<" idstr ".txt>") ;
-    printf ("  abstract = {%s},\n", abstract) ;
-    printf ("  url = {{http://tools.ietf.org/html/%s}},\n", idstr);
-    printf ("}\n\n") ;
+    printf("@Misc{id:%s,\n", idstr) ;
+    printf("  author = {%s},\n", authors) ;
+    printf("  title = {%s},\n", title) ;
+    printf("  howpublished = {Internet Draft},\n") ;
+    printf("  month = %s,\n", month) ;
+    printf("  year = %s,\n", year) ;
+    printf("  note = {%s},\n", "<" idstr ".txt>") ;
+    printf("  abstract = {%s},\n", abstract) ;
+    printf("  url = {{http://tools.ietf.org/html/%s}},\n", idstr);
+    printf("}\n\n") ;
 }
