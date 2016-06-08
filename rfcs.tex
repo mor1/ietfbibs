@@ -1,0 +1,16 @@
+\documentclass{book}
+
+\usepackage{showkeys}
+\usepackage[
+  backend=biber, 
+  natbib=true,
+  style=numeric,
+  sorting=none
+  ]{biblatex}
+
+\bibliography{rfcs}
+
+\begin{document}
+\nocite{*}
+\printbibliography
+\end{document}

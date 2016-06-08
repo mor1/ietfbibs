@@ -1,25 +1,20 @@
 .PHONY = all clean
 
-PDFLATEX = xelatex
+LATEX = latexmk -xelatex
 
-all: rfcs.pdf
+all: rfcs.pdf ids.pdf
 
 clean:
-	$(RM) *.pdf rfcs.bib rfc-index.txt
+	$(LATEX) -C
+	$(RM) rfcs.bib rfcs.bbl rfcs.run.xml
+	$(RM) ids.bib ids.bbl ids.run.xml
+	$(RM) -r auto
 
-rfc-index.txt:
-	wget -q http://www.rfc-editor.org/rfc/rfc-index.txt
+rfcs.bib:
+	./rfc2bib >| rfcs.bib
 
-rfcs.bib: rfc-index.txt
-	gawk -f rfc2bib.awk -- rfc-index.txt >| rfcs.bib
+ids.bib:
+	./id2bib >| ids.bib
 
 %.pdf: %.tex %.bib
-	$(PDFLATEX) $*
-	-bibtex $*
-	-for f in *.aux; do bibtex $${f#.aux} ; done
-	if [ -e $*.toc ] ; then $(PDFLATEX) $* ; fi
-	if [ -e $*.bbl ] ; then $(PDFLATEX) $* ; fi
-	if egrep Rerun $*.log ; then $(PDFLATEX) $* ; fi
-	if egrep Rerun $*.log ; then $(PDFLATEX) $* ; fi
-	if egrep Rerun $*.log ; then $(PDFLATEX) $* ; fi
-	$(RM) *.aux *.log *.bbl *.blg *.toc *.dvi *.out
+	$(LATEX) $*
